@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+
+@font-face {
+  font-family: 'Vazir';
+  src: url('../fonts/Vazir.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Vazir';
+  src: url('../fonts/Vazir-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Vazir';
+  src: url('../fonts/Vazir-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Vazir', sans-serif;
+}
+
+@keyframes floating {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-12px) rotate(0.7deg);
+  }
+
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+.floating-card {
+  animation: floating 6s ease-in-out infinite;
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.floating-1 {
+  animation-duration: 6s;
+}
+
+.floating-2 {
+  animation-duration: 7.5s;
+  animation-delay: 0.8s;
+}
+
+.floating-3 {
+  animation-duration: 6.8s;
+  animation-delay: 1.6s;
+}
+
+.floating-4 {
+  animation-duration: 8s;
+  animation-delay: 0.4s;
+}
+/* //// Latest Activity */
+.latest-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.latest-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.latest-scroll::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.latest-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
