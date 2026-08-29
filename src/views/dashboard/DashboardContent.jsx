@@ -13,7 +13,7 @@ import { ActivityIcon, ChartPie, Zap } from "lucide-react";
 import dashboardCrud from "../../api/dashboardCrud";
 
 function DashboardContent() {
-  
+
   const setData = useState(null);
 
   useEffect(() => {
