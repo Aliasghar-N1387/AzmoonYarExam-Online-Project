@@ -1,0 +1,16 @@
+import { Search } from "lucide-react";
+
+function SearchExam() {
+  return (
+    <div className="relative">
+      <input
+        type="text"
+        placeholder="...جستجو در آزمون ها"
+        className="w-80 text-right pr-10 h-10 rounded-lg border border-gray-300 text-gray-500 font-bold text-sm focus: outline-none"
+      />
+      <Search size={16} className="absolute right-3 text-gray-500 top-2" />
+    </div>
+  );
+}
+
+export default SearchExam;
