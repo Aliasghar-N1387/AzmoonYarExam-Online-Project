@@ -6,6 +6,8 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
+import background from "../../assets/img/bg-card-question.png";
+
 function CardInformation() {
   const Cardinfo = [
     {
@@ -50,9 +52,8 @@ function CardInformation() {
     },
   ];
 
-
-  ///Animate Number to Start - End
   const [counts, setCounts] = useState(Cardinfo.map(() => 0));
+
   useEffect(() => {
     const duration = 1800;
     const startTime = performance.now();
@@ -61,7 +62,6 @@ function CardInformation() {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
 
-      // ease-out
       const easeOut = 1 - Math.pow(1 - progress, 3);
 
       setCounts(Cardinfo.map((card) => Math.floor(card.count * easeOut)));
@@ -79,14 +79,17 @@ function CardInformation() {
       {Cardinfo.map((card, index) => {
         return (
           <div
-            className="flex rounded-lg border border-gray-300 shadow-gray-800/30"
             key={card.id}
+            className="flex rounded-xl border border-gray-300 shadow-gray-800/30 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(${background})`,
+            }}
           >
-            <div className="flex items-center justify-center pl-5 py-10">
+            <div className="flex items-center justify-center pl-5">
               <span>{card.icon}</span>
             </div>
 
-            <div className="w-full pr-5 py-5 px-10">
+            <div className="w-full pr-5 py-3 px-10">
               <p className="font-bold text-lg">{card.name}</p>
 
               <p className="font-bold text-3xl">

@@ -32,6 +32,7 @@ function DashboardContent() {
 
   return (
     <div className="p-6 h-full pb-0 bg-violet-50/50">
+      {/* Card Info  */}
       <div>
         <CardInformation />
       </div>
@@ -93,6 +94,7 @@ function DashboardContent() {
           <CalendarDate />
         </div>
       </div>
+
     </div>
   );
 }

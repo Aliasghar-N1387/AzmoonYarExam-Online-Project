@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../assets/img/LogoApp.png";           
+import logo from "../../assets/img/LogoApp.png";
 import {
   Book,
   CircleQuestionMark,
@@ -11,8 +11,13 @@ import {
   LibraryBig,
   ChevronRight,
   LogOut,
+  WavesArrowDown,
+  Crown,
+  Settings,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router";
+
+import bgsidebar from "../../assets/img/sidebar-img.png";
 
 function SideBarContent({ collapsed, setCollapsed }) {
   const menuItemSidebar = [
@@ -30,26 +35,44 @@ function SideBarContent({ collapsed, setCollapsed }) {
     },
     {
       id: 3,
-      name: "دروس",
-      iconMenu: <GraduationCap size={16} />,
-      router: "lessons",
-    },
-    {
-      id: 4,
       name: "سوالات",
       iconMenu: <CircleQuestionMark size={16} />,
       router: "questions",
     },
     {
-      id: 5,
+      id: 4,
       name: "آزمون ها",
       iconMenu: <ClipboardList size={16} />,
       router: "exams",
     },
     {
-      id: 6,
+      id: 5,
       name: "ایجاد آزمون",
       iconMenu: <ClipboardPlus size={16} />,
+      router: "create-exam",
+    },
+    {
+      id: 6,
+      name: "دانلود ها",
+      iconMenu: <WavesArrowDown size={16} />,
+      router: "create-exam",
+    },
+    {
+      id: 7,
+      name: "اشتراک",
+      iconMenu: <Crown size={16} />,
+      router: "create-exam",
+    },
+    {
+      id: 8,
+      name: "تنظیمات",
+      iconMenu: <Settings size={16} />,
+      router: "create-exam",
+    },
+    {
+      id: 9,
+      name: "راهنما",
+      iconMenu: <CircleQuestionMark size={16} />,
       router: "create-exam",
     },
   ];
@@ -63,11 +86,13 @@ function SideBarContent({ collapsed, setCollapsed }) {
 
   return (
     <div
-      className={`flex flex-col bg-white px-3 py-4 transition-all duration-300`}
+      className="flex h-full flex-col bg-cover bg-center bg-no-repeat px-3 py-4 transition-all duration-300"
       dir="rtl"
+      style={{
+        backgroundImage: `url(${bgsidebar})`,
+      }}
     >
       {/* Header Sidebar */}
-
       <div className="flex justify-center py-2 mb-4 text-right">
         {!collapsed && (
           <div className="mt-4">
@@ -95,7 +120,7 @@ function SideBarContent({ collapsed, setCollapsed }) {
         ></div>
       </div>
 
-      {/* Header Content  */}
+      {/* Content SideBar */}
       <div className="">
         <ul>
           {menuItemSidebar.map((menu) => {
@@ -107,7 +132,7 @@ function SideBarContent({ collapsed, setCollapsed }) {
               <li
                 key={menu.id}
                 onClick={() => navigate(menu.router)}
-                className={`flex transition-all duration-250 cursor-pointer group items-center rounded-lg py-1.5 px-1 mt-3 ${isActive ? "bg-violet-900" : "bg-gray-50 hover:bg-violet-900"} ${collapsed ? "justify-center" : "gap-3"}`}
+                className={`flex transition-all duration-250 cursor-pointer group items-center rounded-lg py-1.5 px-1 mt-4 ${isActive ? "bg-violet-900" : "bg-violet-100/90 hover:bg-violet-900"} ${collapsed ? "justify-center" : "gap-3"}`}
               >
                 <span
                   className={`p-1 rounded-lg transition-all duration-300 ${isActive ? "bg-gray-100 text-violet-900 shadow-sm shadow-gray-300" : "text-violet-900 group-hover:bg-gray-100 group-hover:shadow-sm group-hover:shadow-violet-200"}`}
@@ -129,35 +154,48 @@ function SideBarContent({ collapsed, setCollapsed }) {
         </ul>
       </div>
 
-      <button
-        onClick={toggleCollapse}
-        className={`flex mt-90 mb-2 py-2.5 pt-3 px-2 cursor-pointer ${collapsed ? "justify-center" : "gap-3"}`}
-      >
-        <LogOut
-          size={18}
-          className="transition-transform text-rose-700 duration-300 group-hover:-translate-x-1"
-        />
-        {!collapsed && (
-          <span className="mr-2 font-bold text-sm text-rose-700">خروج</span>
-        )}
-      </button>
-
-      <button
-        onClick={toggleCollapse}
-        className={`flex py-2.5 pt-3 px-2 border-t border-gray-300 cursor-pointer ${collapsed ? "justify-center" : "gap-3"}`}
-      >
-        <span
-          className={`${collapsed ? "rotate-180" : ""} transition-all duration-500`}
+      {/* Footer SideBar */}
+      <div className="mt-auto">
+        {/* Exit Button */}
+        <button
+          className={`flex w-full py-2.5 pt-3 px-2 cursor-pointer ${
+            collapsed ? "justify-center" : "gap-3"
+          }`}
         >
-          <ChevronRight size={18} strokeWidth={3} className="text-violet-900" />
-        </span>
+          <LogOut
+            size={18}
+            className="transition-transform text-rose-700 duration-300"
+          />
 
-        {!collapsed && (
-          <span className="mr-2 font-bold text-sm text-violet-900">بستن</span>
-        )}
-      </button>
+          {!collapsed && (
+            <span className="mr-2 font-bold text-sm text-rose-700">خروج</span>
+          )}
+        </button>
 
+        {/* Collapse Button */}
+        <button
+          onClick={toggleCollapse}
+          className={`flex w-full py-2.5 pt-3 px-2 border-t border-gray-300 cursor-pointer ${
+            collapsed ? "justify-center" : "gap-3"
+          }`}
+        >
+          <span
+            className={`${
+              collapsed ? "rotate-180" : ""
+            } transition-all duration-500`}
+          >
+            <ChevronRight
+              size={18}
+              strokeWidth={3}
+              className="text-violet-900"
+            />
+          </span>
 
+          {!collapsed && (
+            <span className="mr-2 font-bold text-sm text-violet-900">بستن</span>
+          )}
+        </button>
+      </div>
     </div>
   );
 }

@@ -19,7 +19,7 @@ function MainLayout() {
       </aside>
 
       <div className={`transition-all duration-300 ${contentClasses}`}>
-        <header className={`fixed top-0 right-0 h-16 z-40 bg-white transition-all duration-300 ${contentClasses}`}>
+        <header className={`fixed w-full top-0 right-0 h-16 z-40 bg-white transition-all duration-300 ${contentClasses}`}>
           <HeaderContent />
         </header>
 

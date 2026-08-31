@@ -57,13 +57,13 @@ function QuestionTypeChart() {
       </div>
 
       {/* Legend */}
-      <div className="flex mr-10 flex-col gap-2">
+      <div className="flex mr-10 flex-col gap-4">
         {chartData.map((item) => (
           <div
             key={item.id}
             className="flex items-center justify-between gap-6"
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <span
                 className="w-3 h-3 rounded-full"
                 style={{
@@ -71,7 +71,7 @@ function QuestionTypeChart() {
                 }}
               />
 
-              <span className="text-sm text-gray-600">{item.label}</span>
+              <span className="text-xs w-20 text-gray-600">{item.label}</span>
             </div>
 
             <span className="text-xs font-[Vazir] font-bold text-gray-500">{item.value}</span>

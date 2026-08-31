@@ -243,7 +243,7 @@ function BookContent() {
     <div className="p-6 h-full bg-violet-50/50">
       {/* Header  */}
       <div className="flex pl-10 justify-between text-right">
-        <div className="flex gap-4">
+        <div className="flex justify-center items-center gap-4">
           {btnHeader.map((btn) => {
             return (
               <div key={btn.id}>
