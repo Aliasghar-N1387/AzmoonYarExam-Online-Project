@@ -5,7 +5,8 @@ import MainLayout from "../layouts/MainLayout";
 import FormContent from "../views/login/FormContent";
 import DashboardContent from "../views/dashboard/DashboardContent";
 import BookContent from "../views/book/BookContent";
-import Exams from "../views/exams/Exams";
+import QuestionContent from "../views/questions/QuestionContent";
+import ExamContent from "../views/exams/ExamContent";
 
 const router = createBrowserRouter([
   {
@@ -27,7 +28,11 @@ const router = createBrowserRouter([
       },
       {
         path: "exams",
-        element: <Exams />,
+        element: <ExamContent />,
+      },
+      {
+        path: "questions",
+        element: <QuestionContent />,
       },
     ],
   },
