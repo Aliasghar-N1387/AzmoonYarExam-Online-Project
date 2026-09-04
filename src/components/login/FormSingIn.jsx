@@ -1,76 +1,191 @@
 import BtnDataForm from "./BtnDataForm";
-import { Mail, EyeOff, Lock } from "lucide-react";
+import { useNavigate } from "react-router";
+import { Phone, Lock } from "lucide-react";
 import GoogleIcon from "../../assets/img/Google-icon.png";
 import logo from "../../assets/img/LogoApp.png";
 import { useState } from "react";
+import loginCrud from "../../api/loginCrud";
+import { useToast } from "../custom/Toast";
 
 function FormSingIn({ title, subtitle, onSingUp }) {
+  const toast = useToast();
 
+  const navigate = useNavigate();
 
+  const [formData, setFormData] = useState({
+    phoneNumber: "",
+    password: "",
+  });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const btnSingIn = [
     {
       id: 1,
+      name: "phoneNumber",
       lable: "شماره موبایل",
-      backIcon: <Mail className="size-5" />,
+      backIcon: <Phone className="size-5" />,
     },
     {
       id: 2,
+      name: "password",
       lable: "رمز عبور",
+      type: "password",
       backIcon: <Lock className="size-5" />,
-      showPassIcon: (
-        <EyeOff className="absolute left-4 top-4 size-5 text-gray-400" />
-      ),
     },
   ];
 
-  const [loading, setLoading] = useState(false);
-
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (loading) return;
 
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    setTimeout(() => {
+      if (!formData.phoneNumber.trim()) {
+        toast.error("شماره موبایل را وارد کنید", {
+          title: "خطا",
+          duration: 5000,
+        });
+        return;
+      }
+
+      if (!formData.password) {
+        toast.error("رمز عبور را وارد کنید", {
+          title: "خطا",
+          duration: 5000,
+        });
+        return;
+      }
+
+      const data = {
+        phoneNumber: formData.phoneNumber.trim(),
+        password: formData.password,
+      };
+
+      console.log("Login Payload:", data);
+
+      const response = await loginCrud.loginUser(data);
+
+      const result = await response.json().catch(() => null);
+
+      console.log("Login Status:", response.status);
+      console.log("Login Response:", result);
+
+      if (response.status === 200) {
+        console.log("ورود موفق");
+
+        // if (result?.token) {
+        //   localStorage.setItem("token", result.token);
+        // }
+
+        // if (result?.accessToken) {
+        //   localStorage.setItem("accessToken", result.accessToken);
+        // }
+
+        toast.success("ورود با موفقیت انجام شد", {
+          title: "خوش آمدید 🎉",
+          duration: 1500,
+        });
+
+        // رفتن به داشبورد
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1500);
+
+        return;
+      }
+      if (result?.error) {
+        const errors = Object.values(result.error).flat();
+
+        errors.forEach((errorMessage) => {
+          toast.error(errorMessage, {
+            title: "خطای ورود",
+            duration: 6000,
+          });
+        });
+
+        return;
+      }
+      if (result?.message) {
+        toast.error(result.message, {
+          title: "ورود ناموفق",
+          duration: 6000,
+        });
+
+        return;
+      }
+      toast.error("شماره موبایل یا رمز عبور صحیح نیست", {
+        title: "ورود ناموفق",
+        duration: 6000,
+      });
+    } catch (error) {
+      console.error("Login Error:", error);
+
+      toast.error(error.message || "خطایی هنگام ورود رخ داد", {
+        title: "خطای ورود",
+        duration: 6000,
+      });
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
+  };
+
+  const togglePassword = () => {
+    setShowPassword((prev) => !prev);
   };
 
   return (
     <div className="absolute -left-50 top-10 bg-white rounded-3xl w-150 h-200 p-7 shadow-[0_0_45px_rgba(0,0,0,0.3)]">
       <div className="w-full">
+        {/* Title */}
         <div className="py-4 flex items-center justify-center flex-col">
           <h1 className="font-[Vazir] text-gray-900 text-2xl font-extrabold">
             {title}
           </h1>
+
           <p className="font-[Vazir] p-5 text-gray-500 text-md font-bold">
             {subtitle}
           </p>
         </div>
 
+        {/* Inputs */}
         <div className="px-2">
-          {btnSingIn.map((txt) => {
-            return (
-              <BtnDataForm
-                key={txt.id}
-                lable={txt.lable}
-                backIcon={txt.backIcon}
-                showPassIcon={txt.showPassIcon}
-              />
-            );
-          })}
+          {btnSingIn.map((txt) => (
+            <BtnDataForm
+              key={txt.id}
+              name={txt.name}
+              lable={txt.lable}
+              backIcon={txt.backIcon}
+              type={txt.type}
+              value={formData[txt.name]}
+              showPassword={txt.type === "password" ? showPassword : false}
+              onTogglePassword={
+                txt.type === "password" ? togglePassword : undefined
+              }
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  [txt.name]: e.target.value,
+                }))
+              }
+            />
+          ))}
         </div>
 
+        {/* Forgot / Remember */}
         <div className="px-2 py-6 flex justify-between items-center">
           <div>
-            <a className="font-[Vazir] font-bold text-violet-800 text-sm cursor-pointer transition-all hover:underline hover:decoration-violet-800">
+            <a className="font-[Vazir] font-bold text-violet-800 text-sm cursor-pointer transition-all hover:underline">
               فراموشی رمز عبور ؟
             </a>
           </div>
+
           <div className="flex items-center">
             <label className="font-[Vazir] font-bold pr-3 text-sm">
               مرا به خاطر بسپار
             </label>
+
             <input
               type="checkbox"
               className="size-4 cursor-pointer accent-violet-800"
@@ -78,78 +193,55 @@ function FormSingIn({ title, subtitle, onSingUp }) {
           </div>
         </div>
 
+        {/* Login button */}
         <div className="px-2">
           <button
+            type="button"
             onClick={handleLogin}
             disabled={loading}
-            className="
-    relative
-    w-full h-14
-    cursor-pointer
-    rounded-xl
-    font-[Vazir]
-    bg-violet-800
-    text-lg font-bold text-white
-
-    flex items-center justify-center
-    overflow-hidden
-
-    transition-all duration-300
-
-    hover:bg-violet-900
-    hover:shadow-lg
-    hover:shadow-violet-200
-
-    active:scale-[0.97]
-
-    disabled:cursor-not-allowed
-  "
+            className="relative w-full h-14 cursor-pointer rounded-xl font-[Vazir] bg-violet-800 text-lg font-bold text-white flex items-center justify-center overflow-hidden transition-all duration-300 hover:bg-violet-900 hover:shadow-lg hover:shadow-violet-200 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-90
+            "
           >
             <span
               className={`
-      absolute
-      transition-all duration-300
-      ${
-        loading
-          ? "opacity-0 scale-75 translate-y-3"
-          : "opacity-100 scale-100 translate-y-0"
-      }
-    `}
+                absolute
+                transition-all duration-300
+                ${
+                  loading
+                    ? "opacity-0 scale-75 translate-y-3"
+                    : "opacity-100 scale-100 translate-y-0"
+                }
+              `}
             >
               ورود
             </span>
 
             <div
-              className={`
-      flex items-center gap-3
-      transition-all duration-300
-      ${loading ? "opacity-100 scale-100" : "opacity-0 scale-75"}
-    `}
+              className={`flex items-center gap-3 transition-all duration-300 ${loading ? "opacity-100 scale-100" : "opacity-0 scale-75"}
+              `}
             >
               <span
-                className="
-        w-5 h-5
-        border-2
-        border-white/40
-        border-t-white
-        rounded-full
-        animate-spin
-      "
-              ></span>
+                className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin
+                "
+              />
 
-              <span> ...در حال ورود</span>
+              <span>...در حال ورود</span>
             </div>
           </button>
 
+          {/* Google */}
           <div className="px-2 py-10 relative">
-            <hr className="text-gray-300" />
-            <p className="font-[Vazir] bg-white absolute right-59 top-7.5 px-5">
+            <hr className="border-gray-300" />
+
+            <p className="font-[Vazir] bg-white absolute left-1/2 -translate-x-1/2 -top-3 px-5 text-gray-600">
               یا
             </p>
           </div>
+
           <button
             type="button"
-            className="w-full h-12 rounded-lg font-[Vazir] bg-white border-2 border-gray-400 text-lg font-bold text-gray-600 flex justify-center items-center cursor-pointer transition-all durat hover:border-violet-500 hover:text-violet-800 hover:bg-vi active:scale-[0.98]"
+            className="w-full h-12 rounded-lg font-[Vazir] bg-white border-2 border-gray-400 text-lg font-bold text-gray-600 flex justify-center items-center cursor-pointer transition-all duration-300 hover:border-violet-500 hover:text-violet-800 hover:bg-violet-50 active:scale-[0.98]
+            "
           >
             <img
               src={GoogleIcon}
@@ -157,16 +249,18 @@ function FormSingIn({ title, subtitle, onSingUp }) {
               className="size-6 object-contain"
             />
 
-            <span className="pl-2.5">ثبت نام با گوگل</span>
+            <span className="pl-2.5">ورود با گوگل</span>
           </button>
         </div>
 
+        {/* Signup */}
         <div className="flex items-center justify-center py-10">
           <span className="font-bold">
             حساب کاربری ندارید ؟{" "}
             <a
               onClick={onSingUp}
-              className="font-[Vazir] font-bold text-violet-800 text-sm px-1 underline cursor-pointer"
+              className="font-[Vazir] font-bold text-violet-800 text-sm px-1 underline cursor-pointer
+              "
             >
               ثبت نام
             </a>
@@ -174,6 +268,7 @@ function FormSingIn({ title, subtitle, onSingUp }) {
           </span>
         </div>
 
+        {/* Logo */}
         <div className="flex py-8 items-center justify-center">
           <div
             className="w-14 h-12 bg-violet-800"
@@ -187,7 +282,7 @@ function FormSingIn({ title, subtitle, onSingUp }) {
               maskPosition: "center",
               maskSize: "contain",
             }}
-          ></div>
+          />
 
           <div className="mt-2">
             <h1 className="font-[Vazir] text-gray-700 text-lg font-extrabold">

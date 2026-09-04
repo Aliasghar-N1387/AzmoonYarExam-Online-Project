@@ -75,7 +75,10 @@ function FormSingUp({ title, subtitle, onLogin }) {
 
       // بررسی تکرار رمز عبور
       if (formData.password !== formData.confirmPassword) {
-        toast.error("رمز عبور و تکرار رمز عبور یکسان نیستند");
+        toast.error("رمز عبور و تکرار رمز عبور یکسان نیستند", {
+          title: "خطای رمز عبور",
+          duration: 6000,
+        });
         return;
       }
 
@@ -90,39 +93,48 @@ function FormSingUp({ title, subtitle, onLogin }) {
       console.log("Register Payload:", data);
 
       const response = await loginCrud.registerUserSingUp(data);
-
       const result = await response.json().catch(() => null);
 
       console.log("Register Response:", result);
 
       // اگر درخواست ناموفق بود
       if (!response.ok) {
-        let errorMessage = "ثبت نام انجام نشد";
-
-        // خطاهای ولیدیشن بک‌اند
+        // اگر بک‌اند خطاهای validation فرستاده
         if (result?.error) {
           const errors = Object.values(result.error).flat();
 
-          if (errors.length > 0) {
-            errorMessage = errors.join("\n");
-          }
+          // هر خطا در یک Toast جدا
+          errors.forEach((errorMessage) => {
+            toast.error(errorMessage, {
+              title: "خطای اعتبارسنجی",
+              duration: 6000,
+            });
+          });
+
+          return;
         }
 
-        // اگر بک‌اند message معمولی فرستاد
-        else if (result?.message) {
-          errorMessage = result.message;
+        // اگر بک‌اند فقط message فرستاده
+        if (result?.message) {
+          toast.error(result.message, {
+            title: "ثبت نام ناموفق",
+            duration: 6000,
+          });
+
+          return;
         }
 
-        throw new Error(errorMessage);
+        // خطای پیش‌فرض
+        toast.error("ثبت نام انجام نشد", {
+          title: "ثبت نام ناموفق",
+          duration: 6000,
+        });
+
+        return;
       }
 
       // ثبت نام موفق
       setSuccess(true);
-
-      toast.success("شما با موفقیت ثبت نام کردید", {
-        title: "ثبت نام موفق 🎉",
-        duration: 2500,
-      });
 
       // انتقال به صفحه ورود
       setTimeout(() => {
@@ -150,8 +162,8 @@ function FormSingUp({ title, subtitle, onLogin }) {
   return (
     <div className="absolute -left-50 top-10 bg-white rounded-3xl w-150 min-h-200 p-7 shadow-[0_0_45px_rgba(0,0,0,0.3)]">
       {success && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="w-[400px] rounded-3xl bg-white p-8 text-center shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="w-100 rounded-3xl bg-white p-8 text-center shadow-2xl">
             {/* آیکون تیک */}
             <div className="mx-auto mb-5 flex size-20 items-center justify-center rounded-full bg-green-100">
               <svg

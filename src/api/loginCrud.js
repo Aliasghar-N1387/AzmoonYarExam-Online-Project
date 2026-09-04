@@ -10,6 +10,17 @@ const registerUserSingUp = async (data) => {
   });
 };
 
+const loginUser = async (data) => {
+  return await fetch(`${API_URL}v1/user/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+};
+
 export default {
   registerUserSingUp,
+  loginUser,
 };
