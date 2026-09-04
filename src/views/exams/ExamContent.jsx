@@ -85,8 +85,14 @@ function ExamContent() {
         </div>
       </div>
 
+      <div className="mt-7 grid w-full grid-cols-1 gap-3 md:grid-cols-3">
+        {advertisements.map((item) => (
+          <AdvertisementCard key={item.id} {...item} />
+        ))}
+      </div>
+
       {/* Content  */}
-      <div className="my-10 flex justify-center items-end gap-14">
+      <div className="my-5 flex justify-center items-end gap-14">
         <FilterExam />
         <SearchExam />
       </div>
@@ -96,11 +102,6 @@ function ExamContent() {
       </div>
 
       {/* Footer */}
-      <div className="mt-7 grid w-full grid-cols-1 gap-3 md:grid-cols-3">
-        {advertisements.map((item) => (
-          <AdvertisementCard key={item.id} {...item} />
-        ))}
-      </div>
     </div>
   );
 }

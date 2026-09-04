@@ -1,45 +1,31 @@
 import { ResponsivePie } from "@nivo/pie";
 
-const chartData = [
-  {
-    id: "تستی",
-    label: "تستی",
-    value: 1498,
-    color: "#6D28D9",
-  },
-  {
-    id: "تشریحی",
-    label: "تشریحی",
-    value: 394,
-    color: "#34D399",
-  },
-  {
-    id: "کوتاه پاسخ",
-    label: "کوتاه پاسخ",
-    value: 197,
-    color: "#F59E0B",
-  },
-  {
-    id: "جای خالی",
-    label: "جای خالی",
-    value: 148,
-    color: "#EC4899",
-  },
-  {
-    id: "صحیح/غلط",
-    label: "صحیح/غلط",
-    value: 123,
-    color: "#FBBF24",
-  },
-  {
-    id: "وصل کردنی",
-    label: "وصل کردنی",
-    value: 96,
-    color: "#38BDF8",
-  },
-];
+function QuestionTypeChart({ Cardinfo }) {
+  const questionTypeNames = {
+    1: "تشریحی",
+    2: "جای خالی",
+    3: "وصل کردنی",
+    4: "تستی",
+    5: "کوتاه پاسخ",
+    6: "صحیح/غلط",
+  };
 
-function QuestionTypeChart() {
+  const colors = {
+    1: "#34D399",
+    2: "#EC4899",
+    3: "#38BDF8",
+    4: "#6D28D9",
+    5: "#F59E0B",
+    6: "#FBBF24",
+  };
+
+  const chartData = Cardinfo.questionTypeCounts.map((item) => ({
+    id: item.questionType,
+    label: questionTypeNames[item.questionType] || "نامشخص",
+    value: item.questionCount,
+    color: colors[item.questionType] || "#9CA3AF",
+  }));
+
   return (
     <div className="flex items-center justify-between gap-8">
       {/* Chart */}
@@ -74,7 +60,9 @@ function QuestionTypeChart() {
               <span className="text-xs w-20 text-gray-600">{item.label}</span>
             </div>
 
-            <span className="text-xs font-[Vazir] font-bold text-gray-500">{item.value}</span>
+            <span className="text-xs font-[Vazir] font-bold text-gray-500">
+              {item.value}
+            </span>
           </div>
         ))}
       </div>

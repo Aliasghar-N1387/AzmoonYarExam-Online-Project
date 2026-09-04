@@ -6,7 +6,7 @@ function UserProfileHeader() {
   return (
     <div
       dir="rtl"
-      className="flex w-55 items-center justify-between rounded-xl border border-gray-100 px-4 py-2 shadow-sm"
+      className="flex w-55 items-center justify-between rounded-xl border border-gray-200 px-4 py-2 shadow-sm"
     >
 
       {/* Teacher Info */}

@@ -10,18 +10,23 @@ import LatestExams from "../../components/dashboard/LatestExams";
 import CalendarDate from "../../components/custom/CalenderDate";
 
 import { ActivityIcon, ChartPie, Zap } from "lucide-react";
+
 import dashboardCrud from "../../api/dashboardCrud";
+import DashboardLoading from "../../components/dashboard/DashboardLoading";
 
 function DashboardContent() {
-
-  const setData = useState(null);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     const getDashboardData = async () => {
       try {
         const response = await dashboardCrud.getData();
+
         const result = await response.json();
-        setData(result);
+
+        setData(result.data);
+
+        console.log("Dashboard Data:", result.data);
       } catch (error) {
         console.error("Error:", error);
       }
@@ -30,11 +35,15 @@ function DashboardContent() {
     getDashboardData();
   }, []);
 
+  if (!data) {
+    return <DashboardLoading />;
+  }
+
   return (
     <div className="p-6 h-full pb-0 bg-violet-50/50">
-      {/* Card Info  */}
+      {/* Card Info */}
       <div>
-        <CardInformation />
+        <CardInformation Cardinfo={data} />
       </div>
 
       <div className="mt-5 flex gap-10 justify-center items-center">
@@ -72,18 +81,18 @@ function DashboardContent() {
         <div className="relative rounded-lg border border-gray-300">
           <p className="absolute top-2 right-10 flex items-center gap-3 text-sm font-bold mt-2.5">
             سوالات براساس نوع
-            <ChartPie className="size-4 text-violet-900" />
+            <ChartPie  className="size-4 text-violet-900" />
           </p>
 
           <div className="mt-10">
-            <DonutChart />
+            <DonutChart Cardinfo={data} />
           </div>
         </div>
       </div>
 
-      <div className="mt-5 flex gap-10 justify-center items-center">
+      <div className="mt-5 flex gap-17.5 justify-center items-center">
         <div>
-          <LatestActivities />
+          <LatestActivities Cardinfo={data} />
         </div>
 
         <div>
@@ -94,7 +103,7 @@ function DashboardContent() {
           <CalendarDate />
         </div>
       </div>
-
+      
     </div>
   );
 }

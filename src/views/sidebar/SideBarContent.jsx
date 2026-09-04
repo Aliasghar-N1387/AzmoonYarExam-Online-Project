@@ -132,7 +132,7 @@ function SideBarContent({ collapsed, setCollapsed }) {
               <li
                 key={menu.id}
                 onClick={() => navigate(menu.router)}
-                className={`flex transition-all duration-250 cursor-pointer group items-center rounded-lg py-1.5 px-1 mt-4 ${isActive ? "bg-violet-900" : "bg-violet-100/90 hover:bg-violet-900"} ${collapsed ? "justify-center" : "gap-3"}`}
+                className={`flex transition-all duration-250 cursor-pointer group items-center rounded-lg py-1.5 px-1 mt-4 ${isActive ? "bg-violet-900" : "bg-linear-to-r hover:from-white hover:to-violet-200  "} ${collapsed ? "justify-center" : "gap-3"}`}
               >
                 <span
                   className={`p-1 rounded-lg transition-all duration-300 ${isActive ? "bg-gray-100 text-violet-900 shadow-sm shadow-gray-300" : "text-violet-900 group-hover:bg-gray-100 group-hover:shadow-sm group-hover:shadow-violet-200"}`}
@@ -143,7 +143,7 @@ function SideBarContent({ collapsed, setCollapsed }) {
                 </span>
                 {!collapsed && (
                   <span
-                    className={`font-bold text-sm ${isActive ? "text-white" : "text-violet-900 group-hover:text-white"}`}
+                    className={`font-bold text-sm ${isActive ? "text-white" : "text-violet-900"}`}
                   >
                     {menu.name}
                   </span>

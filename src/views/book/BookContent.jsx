@@ -15,9 +15,10 @@ import FiltersBooks from "../../components/books/FiltersBooks";
 import SearchBooks from "../../components/books/SearchBooks";
 import Book from "../../components/books/Book";
 import picBook from "../../assets/img/book.jpg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../components/custom/Modal";
 import DropDown from "../../components/custom/DropDown";
+import bookCrud from "../../api/bookCrud";
 
 function BookContent() {
   // Open and close Modal Add New Book
@@ -67,125 +68,125 @@ function BookContent() {
     },
   ];
 
-  const books = [
-    {
-      id: 1,
-      title: "فارسی ۳",
-      grade: "پایه دوازدهم",
-      field: "رشته همه رشته‌ها",
-      level: "متوسط",
-      lessons: 5,
-      questions: 180,
-      image: picBook,
-    },
-    {
-      id: 2,
-      title: "شیمی ۳",
-      grade: "پایه دوازدهم",
-      field: "رشته تجربی",
-      level: "متوسط",
-      lessons: 7,
-      questions: 298,
-      image: picBook,
-    },
-    {
-      id: 3,
-      title: "فیزیک ۳",
-      grade: "پایه دوازدهم",
-      field: "رشته ریاضی",
-      level: "متوسط",
-      lessons: 6,
-      questions: 256,
-      image: picBook,
-    },
-    {
-      id: 4,
-      title: "ریاضی ۳",
-      grade: "پایه دوازدهم",
-      field: "رشته ریاضی",
-      level: "متوسط",
-      lessons: 8,
-      questions: 320,
-      image: picBook,
-    },
-    {
-      id: 5,
-      title: "زیست شناسی ۳",
-      grade: "پایه دوازدهم",
-      field: "رشته تجربی",
-      level: "متوسط",
-      lessons: 6,
-      questions: 210,
-      image: picBook,
-    },
-    {
-      id: 6,
-      title: "عربی ۳",
-      grade: "پایه دوازدهم",
-      field: "همه رشته‌ها",
-      level: "متوسط",
-      lessons: 3,
-      questions: 88,
-      image: picBook,
-    },
-    {
-      id: 7,
-      title: "قرآن ۳",
-      grade: "پایه دوازدهم",
-      field: "همه رشته‌ها",
-      level: "متوسط",
-      lessons: 3,
-      questions: 96,
-      image: picBook,
-    },
-    {
-      id: 8,
-      title: "زبان انگلیسی ۳",
-      grade: "پایه دوازدهم",
-      field: "همه رشته‌ها",
-      level: "متوسط",
-      lessons: 4,
-      questions: 142,
-      image: picBook,
-    },
-    {
-      id: 8,
-      title: "زبان انگلیسی ۳",
-      grade: "پایه دوازدهم",
-      field: "همه رشته‌ها",
-      level: "متوسط",
-      lessons: 4,
-      questions: 142,
-      image: picBook,
-    },
-    {
-      id: 8,
-      title: "زبان انگلیسی ۳",
-      grade: "پایه دوازدهم",
-      field: "همه رشته‌ها",
-      level: "متوسط",
-      lessons: 4,
-      questions: 142,
-      image: picBook,
-    },
-  ];
+  // const books = [
+  //   {
+  //     id: 1,
+  //     title: "فارسی ۳",
+  //     grade: "پایه دوازدهم",
+  //     field: "رشته همه رشته‌ها",
+  //     level: "متوسط",
+  //     lessons: 5,
+  //     questions: 180,
+  //     image: picBook,
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "شیمی ۳",
+  //     grade: "پایه دوازدهم",
+  //     field: "رشته تجربی",
+  //     level: "متوسط",
+  //     lessons: 7,
+  //     questions: 298,
+  //     image: picBook,
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "فیزیک ۳",
+  //     grade: "پایه دوازدهم",
+  //     field: "رشته ریاضی",
+  //     level: "متوسط",
+  //     lessons: 6,
+  //     questions: 256,
+  //     image: picBook,
+  //   },
+  //   {
+  //     id: 4,
+  //     title: "ریاضی ۳",
+  //     grade: "پایه دوازدهم",
+  //     field: "رشته ریاضی",
+  //     level: "متوسط",
+  //     lessons: 8,
+  //     questions: 320,
+  //     image: picBook,
+  //   },
+  //   {
+  //     id: 5,
+  //     title: "زیست شناسی ۳",
+  //     grade: "پایه دوازدهم",
+  //     field: "رشته تجربی",
+  //     level: "متوسط",
+  //     lessons: 6,
+  //     questions: 210,
+  //     image: picBook,
+  //   },
+  //   {
+  //     id: 6,
+  //     title: "عربی ۳",
+  //     grade: "پایه دوازدهم",
+  //     field: "همه رشته‌ها",
+  //     level: "متوسط",
+  //     lessons: 3,
+  //     questions: 88,
+  //     image: picBook,
+  //   },
+  //   {
+  //     id: 7,
+  //     title: "قرآن ۳",
+  //     grade: "پایه دوازدهم",
+  //     field: "همه رشته‌ها",
+  //     level: "متوسط",
+  //     lessons: 3,
+  //     questions: 96,
+  //     image: picBook,
+  //   },
+  //   {
+  //     id: 8,
+  //     title: "زبان انگلیسی ۳",
+  //     grade: "پایه دوازدهم",
+  //     field: "همه رشته‌ها",
+  //     level: "متوسط",
+  //     lessons: 4,
+  //     questions: 142,
+  //     image: picBook,
+  //   },
+  //   {
+  //     id: 8,
+  //     title: "زبان انگلیسی ۳",
+  //     grade: "پایه دوازدهم",
+  //     field: "همه رشته‌ها",
+  //     level: "متوسط",
+  //     lessons: 4,
+  //     questions: 142,
+  //     image: picBook,
+  //   },
+  //   {
+  //     id: 8,
+  //     title: "زبان انگلیسی ۳",
+  //     grade: "پایه دوازدهم",
+  //     field: "همه رشته‌ها",
+  //     level: "متوسط",
+  //     lessons: 4,
+  //     questions: 142,
+  //     image: picBook,
+  //   },
+  // ];
   //  Book Page Next -  Previous
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const booksPerPage = 8;
-
-  const totalPages = Math.ceil(books.length / booksPerPage);
-
-  const startIndex = (currentPage - 1) * booksPerPage;
-
-  const currentBooks = books.slice(startIndex, startIndex + booksPerPage);
 
   // Modal Data
 
   const gradeItems = [
-    { id: 1, name: "دهم" },
-    { id: 2, name: "یازدهم" },
-    { id: 3, name: "دوازدهم" },
+    { id: 1, name: "اول ابتدایی" },
+    { id: 2, name: "دوم ابتدایی" },
+    { id: 3, name: "سوم ابتدایی" },
+    { id: 4, name: "چهارم ابتدایی" },
+    { id: 5, name: "پنجم ابتدایی" },
+    { id: 6, name: "ششم ابتدایی" },
+    { id: 7, name: "هفتم" },
+    { id: 8, name: "هشتم" },
+    { id: 9, name: "نهم" },
+    { id: 10, name: "دهم" },
+    { id: 11, name: "یازدهم" },
+    { id: 12, name: "دوازدهم" },
   ];
 
   const fieldItems = [
@@ -214,6 +215,21 @@ function BookContent() {
     { id: 5, name: "شیمی" },
   ];
 
+  const gradeBooks = {
+    1: "اول ابتدایی",
+    2: "دوم ابتدایی",
+    3: "سوم ابتدایی",
+    4: "چهارم ابتدایی",
+    5: "پنجم ابتدایی",
+    6: "ششم ابتدایی",
+    7: "هفتم",
+    8: "هشتم",
+    9: "نهم",
+    10: "دهم",
+    11: "یازدهم",
+    12: "دوازدهم",
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
 
@@ -237,6 +253,119 @@ function BookContent() {
 
       return updated;
     });
+  };
+
+  const [books, setBooks] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const booksPerPage = 8;
+  useEffect(() => {
+    const getBooks = async () => {
+      try {
+        const response = await bookCrud.getBooks();
+
+        if (!response.ok) {
+          throw new Error(`HTTP Error: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        console.log("Book Data:", result.data);
+
+        setBooks(result.data?.items || []);
+      } catch (error) {
+        console.error("Error fetching books:", error);
+        setBooks([]);
+      }
+    };
+
+    getBooks();
+  }, []);
+
+  const totalPages = Math.max(1, Math.ceil(books.length / booksPerPage));
+
+  const startIndex = (currentPage - 1) * booksPerPage;
+
+  const currentBooks = books.slice(startIndex, startIndex + booksPerPage);
+
+  const handleCreateBook = async () => {
+    try {
+      if (!bookName.trim()) {
+        alert("لطفاً نام کتاب را وارد کنید");
+        return;
+      }
+
+      if (!selectedGrade) {
+        alert("لطفاً پایه را انتخاب کنید");
+        return;
+      }
+
+      const data = {
+        bookName: bookName.trim(),
+        grade: Number(selectedGrade.id),
+        lessonRequests: lessonNames
+          .slice(0, lessonCount)
+          .filter((title) => title.trim() !== "")
+          .map((title) => ({
+            title: title.trim(),
+          })),
+      };
+
+      console.log("========== CREATE BOOK ==========");
+
+      console.log("Request body:", JSON.stringify(data, null, 2));
+
+      const response = await bookCrud.createBook(data);
+
+      console.log("Response status:", response.status);
+
+      if (!response.ok) {
+        const errorResult = await response.json().catch(() => null);
+
+        console.error("Create book error:", errorResult);
+
+        console.error(
+          "Create book error JSON:",
+          JSON.stringify(errorResult, null, 2),
+        );
+
+        throw new Error(
+          errorResult?.error?.message ||
+            errorResult?.error?.detail ||
+            `HTTP Error: ${response.status}`,
+        );
+      }
+
+      const result = await response.json();
+
+      console.log("Book created:", result);
+
+      alert("کتاب با موفقیت ذخیره شد");
+
+      setIsModalOpen(false);
+      setBookName("");
+      setSelectedGrade(null);
+      setSelectedLevel(null);
+      setSelectedField(null);
+      setSelectedYear(null);
+      setSelectedLessons([]);
+      setLessonCount(0);
+      setLessonNames([]);
+      setDescription("");
+      setBookImage(null);
+      setPreviewImage(null);
+
+      const booksResponse = await bookCrud.getBooks();
+
+      if (booksResponse.ok) {
+        const booksResult = await booksResponse.json();
+
+        setBooks(booksResult.data?.items || []);
+      }
+    } catch (error) {
+      console.error("Error creating book:", error);
+      alert(error.message || "ذخیره کتاب با خطا مواجه شد");
+    }
   };
 
   return (
@@ -273,6 +402,7 @@ function BookContent() {
           <div className=""></div>
         </div>
       </div>
+
       {/* Filter & Search Books  */}
       <div className="my-10 flex justify-center items-end gap-14">
         <FiltersBooks />
@@ -280,17 +410,17 @@ function BookContent() {
       </div>
       {/* Book Card  */}
       <div className="latest-scroll px-10 cursor-s-resize mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 max-h-120 overflow-auto">
-        {currentBooks.map((bookinfo) => {
+        {currentBooks.map((book) => {
           return (
-            <div key={bookinfo.id}>
+            <div key={book.id}>
               <Book
-                title={bookinfo.title}
-                grade={bookinfo.grade}
-                field={bookinfo.field}
-                level={bookinfo.level}
-                image={bookinfo.image}
-                lessons={bookinfo.lessons}
-                questions={bookinfo.questions}
+                title={book.bookName}
+                grade={`پایه ${gradeBooks[book.grade] || book.grade}`}
+                field={book.bookSource === 1 ? "کتاب درسی" : "سایر منابع"}
+                level=""
+                image={picBook}
+                lessons={book.lessons?.length || 0}
+                questions={0}
               />
             </div>
           );
@@ -430,15 +560,15 @@ function BookContent() {
                 )}
 
                 <div className="flex justify-center mt-30 text-right mr-5">
-                    <div className="mt-4">
-                      <h1 className="font-[Vazir] text-violet-900 text-xl font-extrabold">
-                        آزمون یار
-                      </h1>
+                  <div className="mt-4">
+                    <h1 className="font-[Vazir] text-violet-900 text-xl font-extrabold">
+                      آزمون یار
+                    </h1>
 
-                      <p className="font-[Vazir] text-violet-700 text-sm font-bold">
-                        AzmoonYar
-                      </p>
-                    </div>
+                    <p className="font-[Vazir] text-violet-700 text-sm font-bold">
+                      AzmoonYar
+                    </p>
+                  </div>
                   <div
                     className="w-20 h-18 bg-violet-900"
                     style={{
@@ -739,7 +869,8 @@ function BookContent() {
 
               <button
                 type="button"
-                className="h-12 flex-1 rounded-xl bg-violet-700 px-6 text-sm font-bold text-white shadow-lg shadow-violet-700/20 transition hover:bg-violet-800 active:scale-[0.98]"
+                onClick={handleCreateBook}
+                className="h-12 flex-1 rounded-xl bg-violet-700 px-6 text-sm font-bold text-white"
               >
                 ذخیره کتاب
               </button>

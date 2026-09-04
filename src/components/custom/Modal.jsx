@@ -46,7 +46,7 @@ function Modal({ header, content, footer, onClose }) {
           </button>
         </div>
         {/* Content */}
-        <div className="latest-scroll px-2 max-h-[calc(92vh-150px)] overflow-y-auto">
+        <div className="latest-scroll px-2 max-h-150 overflow-auto">
           {content}
         </div>
         {/* Footer */}

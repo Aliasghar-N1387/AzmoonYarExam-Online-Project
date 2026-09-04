@@ -4,12 +4,14 @@ import {
   ClipboardList,
   GraduationCap,
 } from "lucide-react";
+
 import React, { useEffect, useState } from "react";
 
 import background from "../../assets/img/bg-card-question.png";
 
-function CardInformation() {
-  const Cardinfo = [
+function CardInformation({ Cardinfo }) {
+
+  const cards = [
     {
       id: 1,
       name: "سوالات",
@@ -18,7 +20,7 @@ function CardInformation() {
       icon: (
         <CircleQuestionMark className="bg-violet-800/30 text-violet-700 rounded-2xl p-3 size-13" />
       ),
-      count: 6456,
+      count: Cardinfo.totalQuestions,
     },
     {
       id: 2,
@@ -28,7 +30,7 @@ function CardInformation() {
       icon: (
         <BookOpen className="bg-yellow-300/30 text-yellow-500 rounded-2xl p-3 size-13" />
       ),
-      count: 24,
+      count: Cardinfo.totalBooks,
     },
     {
       id: 3,
@@ -38,7 +40,7 @@ function CardInformation() {
       icon: (
         <ClipboardList className="bg-green-400/30 text-green-600 rounded-2xl p-3 size-13" />
       ),
-      count: 32,
+      count: Cardinfo.totalExams,
     },
     {
       id: 4,
@@ -46,13 +48,13 @@ function CardInformation() {
       increse: "+ 60%",
       titrIncrese: "نسبت به ماه گذشته",
       icon: (
-        <GraduationCap className="bg-gray-800/30 text-gray-600 rounded-2xl p-3 size-13" />
+        <GraduationCap className="bg-blue-800/30 text-blue-600 rounded-2xl p-3 size-13" />
       ),
-      count: 15,
+      count: Cardinfo.totalLessons,
     },
   ];
 
-  const [counts, setCounts] = useState(Cardinfo.map(() => 0));
+  const [counts, setCounts] = useState(cards.map(() => 0));
 
   useEffect(() => {
     const duration = 1800;
@@ -64,7 +66,9 @@ function CardInformation() {
 
       const easeOut = 1 - Math.pow(1 - progress, 3);
 
-      setCounts(Cardinfo.map((card) => Math.floor(card.count * easeOut)));
+      setCounts(
+        cards.map((card) => Math.floor(card.count * easeOut))
+      );
 
       if (progress < 1) {
         requestAnimationFrame(animate);
@@ -72,11 +76,12 @@ function CardInformation() {
     };
 
     requestAnimationFrame(animate);
-  }, []);
+  }, [Cardinfo]);
 
   return (
     <div className="text-right flex justify-center gap-10">
-      {Cardinfo.map((card, index) => {
+
+      {cards.map((card, index) => {
         return (
           <div
             key={card.id}
@@ -90,14 +95,18 @@ function CardInformation() {
             </div>
 
             <div className="w-full pr-5 py-3 px-10">
-              <p className="font-bold text-lg">{card.name}</p>
+              <p className="font-bold text-lg">
+                {card.name}
+              </p>
 
               <p className="font-bold text-3xl">
                 {counts[index].toLocaleString("fa-IR")}
               </p>
 
               <span className="flex pt-1 gap-2 items-end justify-end font-bold text-xs">
-                <span className="text-gray-400">{card.titrIncrese}</span>
+                <span className="text-gray-400">
+                  {card.titrIncrese}
+                </span>
 
                 <p className="font-bold text-green-600 text-sm">
                   {card.increse}
@@ -107,6 +116,7 @@ function CardInformation() {
           </div>
         );
       })}
+
     </div>
   );
 }
