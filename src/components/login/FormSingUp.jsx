@@ -1,55 +1,114 @@
-import { Mail, Phone, User, EyeOff, Lock } from "lucide-react";
+import { Mail, Phone, User, Lock } from "lucide-react";
 import { useState } from "react";
 import BtnDataForm from "./BtnDataForm";
-
 import GoogleIcon from "../../assets/img/Google-icon.png";
-import logo from "../../assets/img/LogoApp.png";
+import loginCrud from "../../api/loginCrud";
 
-function FormSingUp({ title, subtitle,onLogin }) {
+
+function FormSingUp({ title, subtitle, onLogin }) {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+    confirmPassword: false,
+  });
+
+  const [loading, setLoading] = useState(false);
+
   const btnSingUp = [
     {
       id: 1,
-      lable: "نام و نام خانوادگی",
+      name: "firstName",
+      lable: "نام",
       backIcon: <User className="size-5" />,
     },
     {
       id: 2,
+      name: "lastName",
+      lable: "نام خانوادگی",
+      backIcon: <User className="size-5" />,
+    },
+    {
+      id: 3,
+      name: "phoneNumber",
       lable: "شماره موبایل",
       backIcon: <Phone className="size-5" />,
     },
     {
-      id: 3,
-      lable: "ایمیل ( اختیاری )",
+      id: 4,
+      name: "email",
+      lable: "ایمیل (اختیاری)",
       backIcon: <Mail className="size-5" />,
     },
     {
-      id: 4,
+      id: 5,
+      name: "password",
       lable: "رمز عبور",
+      type: "password",
       backIcon: <Lock className="size-5" />,
-      showPassIcon: (
-        <EyeOff className="absolute left-4 top-4 size-5 text-gray-400" />
-      ),
     },
     {
-      id: 5,
+      id: 6,
+      name: "confirmPassword",
       lable: "تکرار رمز عبور",
+      type: "password",
       backIcon: <Lock className="size-5" />,
-      showPassIcon: (
-        <EyeOff className="absolute left-4 top-4 size-5 text-gray-400" />
-      ),
     },
   ];
 
-  const [loading, setLoading] = useState(false);
-
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (loading) return;
 
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    setTimeout(() => {
+      if (formData.password !== formData.confirmPassword) {
+        throw new Error("رمز عبور و تکرار رمز عبور یکسان نیستند");
+      }
+
+      const data = {
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        phoneNumber: formData.phoneNumber.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+      };
+
+      console.log("Register Payload:", data);
+
+      const response = await loginCrud.registerUserSingUp(data);
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(
+          result?.message || result?.error?.message || "ثبت نام انجام نشد",
+        );
+      }
+
+      console.log("Register Response:", result);
+
+      onLogin?.();
+    } catch (error) {
+      console.error("Register Error:", error);
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
+  };
+
+  // تغییر وضعیت نمایش رمز
+  const togglePassword = (field) => {
+    setShowPassword((prev) => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
   };
 
   return (
@@ -68,16 +127,30 @@ function FormSingUp({ title, subtitle,onLogin }) {
 
         {/* Inputs */}
         <div className="px-2">
-          {btnSingUp.map((txt) => {
-            return (
-              <BtnDataForm
-                key={txt.id}
-                lable={txt.lable}
-                backIcon={txt.backIcon}
-                showPassIcon={txt.showPassIcon}
-              />
-            );
-          })}
+          {btnSingUp.map((txt) => (
+            <BtnDataForm
+              key={txt.id}
+              name={txt.name}
+              lable={txt.lable}
+              backIcon={txt.backIcon}
+              type={txt.type}
+              value={formData[txt.name]}
+              showPassword={
+                txt.type === "password" ? showPassword[txt.name] : false
+              }
+              onTogglePassword={
+                txt.type === "password"
+                  ? () => togglePassword(txt.name)
+                  : undefined
+              }
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  [txt.name]: e.target.value,
+                }))
+              }
+            />
+          ))}
         </div>
 
         {/* Rules */}
@@ -124,13 +197,10 @@ function FormSingUp({ title, subtitle,onLogin }) {
               overflow-hidden
               transition-all
               duration-300
-
               hover:bg-violet-900
               hover:shadow-lg
               hover:shadow-violet-200
-
               active:scale-[0.97]
-
               disabled:cursor-not-allowed
               disabled:opacity-90
             "
@@ -187,7 +257,27 @@ function FormSingUp({ title, subtitle,onLogin }) {
           {/* Google signup */}
           <button
             type="button"
-            className="w-full h-12 rounded-lg font-[Vazir] bg-white border-2 border-gray-400 text-lg font-bold text-gray-600 flex justify-center items-center cursor-pointer transition-all durat hover:border-violet-500 hover:text-violet-800 hover:bg-vi active:scale-[0.98]
+            className="
+              w-full
+              h-12
+              rounded-lg
+              font-[Vazir]
+              bg-white
+              border-2
+              border-gray-400
+              text-lg
+              font-bold
+              text-gray-600
+              flex
+              justify-center
+              items-center
+              cursor-pointer
+              transition-all
+              duration-300
+              hover:border-violet-500
+              hover:text-violet-800
+              hover:bg-violet-50
+              active:scale-[0.98]
             "
           >
             <img
@@ -204,11 +294,14 @@ function FormSingUp({ title, subtitle,onLogin }) {
         <div className="flex items-center justify-center mt-4">
           <span className="font-[Vazir] font-bold text-gray-700">
             قبلاً حساب کاربری دارید؟{" "}
-            <a onClick={onLogin} className="font-[Vazir] font-bold text-violet-800 text-sm px-1 underline cursor-pointer">
+            <a
+              onClick={onLogin}
+              className="font-[Vazir] font-bold text-violet-800 text-sm px-1 underline cursor-pointer"
+            >
               وارد شوید
             </a>
           </span>
-        </div>       
+        </div>
       </div>
     </div>
   );

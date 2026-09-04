@@ -5,10 +5,13 @@ import logo from "../../assets/img/LogoApp.png";
 import { useState } from "react";
 
 function FormSingIn({ title, subtitle, onSingUp }) {
+
+
+
   const btnSingIn = [
     {
       id: 1,
-      lable: "ایمیل یا شماره موبایل",
+      lable: "شماره موبایل",
       backIcon: <Mail className="size-5" />,
     },
     {
