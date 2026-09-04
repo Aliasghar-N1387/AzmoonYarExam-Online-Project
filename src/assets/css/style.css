@@ -65,7 +65,7 @@ body {
   animation-duration: 8s;
   animation-delay: 0.4s;
 }
-/* //// Latest Activity */
+/* Latest Activity Scroll */
 .latest-scroll::-webkit-scrollbar {
   width: 4px;
 }
@@ -84,7 +84,7 @@ body {
   background: #a8a8a8;
 }
 
-/* // Question */
+/* Question Scroll */
 
 .question-scroll::-webkit-scrollbar {
   width: 7px;
@@ -102,4 +102,27 @@ body {
 
 .question-scroll::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* Tosat Show */
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes toastProgress {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
 }

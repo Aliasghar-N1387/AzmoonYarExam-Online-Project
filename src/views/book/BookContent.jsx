@@ -19,9 +19,10 @@ import { useEffect, useState } from "react";
 import Modal from "../../components/custom/Modal";
 import DropDown from "../../components/custom/DropDown";
 import bookCrud from "../../api/bookCrud";
+import { useToast } from "../../components/custom/Toast";
 
 function BookContent() {
-  // Open and close Modal Add New Book
+  const toast = useToast();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -39,9 +40,9 @@ function BookContent() {
 
   const [description, setDescription] = useState("");
 
-  const [bookImage, setBookImage] = useState(null);
+  // const [bookImage, setBookImage] = useState(null);
 
-  const [previewImage, setPreviewImage] = useState(null);
+  // const [previewImage, setPreviewImage] = useState(null);
 
   const [status, setStatus] = useState("active");
 
@@ -67,112 +68,6 @@ function BookContent() {
         "bg-white text-gray-800 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:shadow-md active:bg-gray-100",
     },
   ];
-
-  // const books = [
-  //   {
-  //     id: 1,
-  //     title: "فارسی ۳",
-  //     grade: "پایه دوازدهم",
-  //     field: "رشته همه رشته‌ها",
-  //     level: "متوسط",
-  //     lessons: 5,
-  //     questions: 180,
-  //     image: picBook,
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "شیمی ۳",
-  //     grade: "پایه دوازدهم",
-  //     field: "رشته تجربی",
-  //     level: "متوسط",
-  //     lessons: 7,
-  //     questions: 298,
-  //     image: picBook,
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "فیزیک ۳",
-  //     grade: "پایه دوازدهم",
-  //     field: "رشته ریاضی",
-  //     level: "متوسط",
-  //     lessons: 6,
-  //     questions: 256,
-  //     image: picBook,
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "ریاضی ۳",
-  //     grade: "پایه دوازدهم",
-  //     field: "رشته ریاضی",
-  //     level: "متوسط",
-  //     lessons: 8,
-  //     questions: 320,
-  //     image: picBook,
-  //   },
-  //   {
-  //     id: 5,
-  //     title: "زیست شناسی ۳",
-  //     grade: "پایه دوازدهم",
-  //     field: "رشته تجربی",
-  //     level: "متوسط",
-  //     lessons: 6,
-  //     questions: 210,
-  //     image: picBook,
-  //   },
-  //   {
-  //     id: 6,
-  //     title: "عربی ۳",
-  //     grade: "پایه دوازدهم",
-  //     field: "همه رشته‌ها",
-  //     level: "متوسط",
-  //     lessons: 3,
-  //     questions: 88,
-  //     image: picBook,
-  //   },
-  //   {
-  //     id: 7,
-  //     title: "قرآن ۳",
-  //     grade: "پایه دوازدهم",
-  //     field: "همه رشته‌ها",
-  //     level: "متوسط",
-  //     lessons: 3,
-  //     questions: 96,
-  //     image: picBook,
-  //   },
-  //   {
-  //     id: 8,
-  //     title: "زبان انگلیسی ۳",
-  //     grade: "پایه دوازدهم",
-  //     field: "همه رشته‌ها",
-  //     level: "متوسط",
-  //     lessons: 4,
-  //     questions: 142,
-  //     image: picBook,
-  //   },
-  //   {
-  //     id: 8,
-  //     title: "زبان انگلیسی ۳",
-  //     grade: "پایه دوازدهم",
-  //     field: "همه رشته‌ها",
-  //     level: "متوسط",
-  //     lessons: 4,
-  //     questions: 142,
-  //     image: picBook,
-  //   },
-  //   {
-  //     id: 8,
-  //     title: "زبان انگلیسی ۳",
-  //     grade: "پایه دوازدهم",
-  //     field: "همه رشته‌ها",
-  //     level: "متوسط",
-  //     lessons: 4,
-  //     questions: 142,
-  //     image: picBook,
-  //   },
-  // ];
-  //  Book Page Next -  Previous
-
-  // Modal Data
 
   const gradeItems = [
     { id: 1, name: "اول ابتدایی" },
@@ -230,16 +125,16 @@ function BookContent() {
     12: "دوازدهم",
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files?.[0];
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files?.[0];
 
-    if (!file) return;
+  //   if (!file) return;
 
-    setBookImage(file);
+  //   setBookImage(file);
 
-    const imageUrl = URL.createObjectURL(file);
-    setPreviewImage(imageUrl);
-  };
+  //   const imageUrl = URL.createObjectURL(file);
+  //   setPreviewImage(imageUrl);
+  // };
 
   const handleLessonCountChange = (e) => {
     const count = Math.max(0, Number(e.target.value) || 0);
@@ -275,7 +170,13 @@ function BookContent() {
         setBooks(result.data?.items || []);
       } catch (error) {
         console.error("Error fetching books:", error);
+
         setBooks([]);
+
+        toast.error("اتصال به سرور برقرار نشد", {
+          title: "خطا در دریافت کتاب‌ها",
+          duration: 5000,
+        });
       }
     };
 
@@ -291,12 +192,16 @@ function BookContent() {
   const handleCreateBook = async () => {
     try {
       if (!bookName.trim()) {
-        alert("لطفاً نام کتاب را وارد کنید");
+        toast.warning("لطفاً نام کتاب را وارد کنید", {
+          title: "اطلاعات ناقص",
+        });
         return;
       }
 
       if (!selectedGrade) {
-        alert("لطفاً پایه را انتخاب کنید");
+        toast.warning("لطفاً پایه را انتخاب کنید", {
+          title: "اطلاعات ناقص",
+        });
         return;
       }
 
@@ -311,23 +216,12 @@ function BookContent() {
           })),
       };
 
-      console.log("========== CREATE BOOK ==========");
-
-      console.log("Request body:", JSON.stringify(data, null, 2));
+      console.log("Create Book Payload:", data);
 
       const response = await bookCrud.createBook(data);
 
-      console.log("Response status:", response.status);
-
       if (!response.ok) {
         const errorResult = await response.json().catch(() => null);
-
-        console.error("Create book error:", errorResult);
-
-        console.error(
-          "Create book error JSON:",
-          JSON.stringify(errorResult, null, 2),
-        );
 
         throw new Error(
           errorResult?.error?.message ||
@@ -336,13 +230,13 @@ function BookContent() {
         );
       }
 
-      const result = await response.json();
-
-      console.log("Book created:", result);
-
-      alert("کتاب با موفقیت ذخیره شد");
+      // Post is Ok
+      toast.success("کتاب با موفقیت ذخیره شد", {
+        title: "عملیات موفق",
+      });
 
       setIsModalOpen(false);
+
       setBookName("");
       setSelectedGrade(null);
       setSelectedLevel(null);
@@ -352,19 +246,20 @@ function BookContent() {
       setLessonCount(0);
       setLessonNames([]);
       setDescription("");
-      setBookImage(null);
-      setPreviewImage(null);
 
       const booksResponse = await bookCrud.getBooks();
 
       if (booksResponse.ok) {
         const booksResult = await booksResponse.json();
-
         setBooks(booksResult.data?.items || []);
       }
     } catch (error) {
       console.error("Error creating book:", error);
-      alert(error.message || "ذخیره کتاب با خطا مواجه شد");
+
+      toast.error(error.message || "ذخیره کتاب با خطا مواجه شد", {
+        title: "خطا در ذخیره کتاب",
+        duration: 5000,
+      });
     }
   };
 
@@ -418,7 +313,7 @@ function BookContent() {
                 grade={`پایه ${gradeBooks[book.grade] || book.grade}`}
                 field={book.bookSource === 1 ? "کتاب درسی" : "سایر منابع"}
                 level=""
-                image={picBook}
+                image={null}
                 lessons={book.lessons?.length || 0}
                 questions={0}
               />
@@ -547,10 +442,6 @@ function BookContent() {
                     <div className="mt-3 flex justify-center">
                       <button
                         type="button"
-                        onClick={() => {
-                          setPreviewImage(null);
-                          setBookImage(null);
-                        }}
                         className="text-sm font-bold text-red-500 hover:text-red-600"
                       >
                         حذف تصویر

@@ -13,29 +13,46 @@ import { ActivityIcon, ChartPie, Zap } from "lucide-react";
 
 import dashboardCrud from "../../api/dashboardCrud";
 import DashboardLoading from "../../components/dashboard/DashboardLoading";
+import { useToast } from "../../components/custom/Toast";
 
 function DashboardContent() {
+  const toast = useToast();
+
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const getDashboardData = async () => {
       try {
+        setLoading(true);
+        setError(false);
+
         const response = await dashboardCrud.getData();
+
+        if (!response.ok) {
+          throw new Error("خطا در دریافت اطلاعات");
+        }
 
         const result = await response.json();
 
         setData(result.data);
-
-        console.log("Dashboard Data:", result.data);
       } catch (error) {
         console.error("Error:", error);
+
+        toast.error("اتصال به سرور برقرار نشد", {
+          title: "خطا در دریافت اطلاعات",
+          duration: 5000,
+        });
+
+        setError(true);
       }
     };
 
     getDashboardData();
   }, []);
 
-  if (!data) {
+  if (loading) {
     return <DashboardLoading />;
   }
 
@@ -81,7 +98,7 @@ function DashboardContent() {
         <div className="relative rounded-lg border border-gray-300">
           <p className="absolute top-2 right-10 flex items-center gap-3 text-sm font-bold mt-2.5">
             سوالات براساس نوع
-            <ChartPie  className="size-4 text-violet-900" />
+            <ChartPie className="size-4 text-violet-900" />
           </p>
 
           <div className="mt-10">
@@ -103,7 +120,6 @@ function DashboardContent() {
           <CalendarDate />
         </div>
       </div>
-      
     </div>
   );
 }

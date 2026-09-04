@@ -33,11 +33,17 @@ function Book({
 
       {/* image */}
       <div className="flex justify-center mb-4">
-        <img
-          src={image}
-          alt={title}
-          className="h-32 w-24 object-cover rounded-md shadow-sm"
-        />
+        {image ? (
+          <img
+            src={image}
+            alt={title}
+            className="h-32 w-24 object-cover rounded-md shadow-sm"
+          />
+        ) : (
+          <div className="h-32 w-24 flex items-center justify-center rounded-md bg-violet-50 border border-violet-100">
+            <BookOpen className="size-12 text-violet-400" />
+          </div>
+        )}
       </div>
 
       {/* title */}

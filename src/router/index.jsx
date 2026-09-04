@@ -1,5 +1,4 @@
-import { createBrowserRouter } from "react-router";
-
+import { Navigate, createBrowserRouter } from "react-router";
 import MainLayout from "../layouts/MainLayout";
 
 import FormContent from "../views/login/FormContent";
@@ -16,20 +15,28 @@ const router = createBrowserRouter([
 
   {
     path: "/",
+    element: <Navigate to="/login" replace />,
+  },
+
+  {
+    path: "/dashboard",
     element: <MainLayout />,
     children: [
       {
         index: true,
         element: <DashboardContent />,
       },
+
       {
         path: "books",
         element: <BookContent />,
       },
+
       {
         path: "exams",
         element: <ExamContent />,
       },
+
       {
         path: "questions",
         element: <QuestionContent />,
