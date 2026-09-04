@@ -3,9 +3,13 @@ import { useState } from "react";
 import BtnDataForm from "./BtnDataForm";
 import GoogleIcon from "../../assets/img/Google-icon.png";
 import loginCrud from "../../api/loginCrud";
-
+import { useToast } from "../custom/Toast";
 
 function FormSingUp({ title, subtitle, onLogin }) {
+  const toast = useToast();
+
+  const [success, setSuccess] = useState(false);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -69,8 +73,10 @@ function FormSingUp({ title, subtitle, onLogin }) {
     try {
       setLoading(true);
 
+      // بررسی تکرار رمز عبور
       if (formData.password !== formData.confirmPassword) {
-        throw new Error("رمز عبور و تکرار رمز عبور یکسان نیستند");
+        toast.error("رمز عبور و تکرار رمز عبور یکسان نیستند");
+        return;
       }
 
       const data = {
@@ -87,23 +93,53 @@ function FormSingUp({ title, subtitle, onLogin }) {
 
       const result = await response.json().catch(() => null);
 
-      if (!response.ok) {
-        throw new Error(
-          result?.message || result?.error?.message || "ثبت نام انجام نشد",
-        );
-      }
-
       console.log("Register Response:", result);
 
-      onLogin?.();
+      // اگر درخواست ناموفق بود
+      if (!response.ok) {
+        let errorMessage = "ثبت نام انجام نشد";
+
+        // خطاهای ولیدیشن بک‌اند
+        if (result?.error) {
+          const errors = Object.values(result.error).flat();
+
+          if (errors.length > 0) {
+            errorMessage = errors.join("\n");
+          }
+        }
+
+        // اگر بک‌اند message معمولی فرستاد
+        else if (result?.message) {
+          errorMessage = result.message;
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      // ثبت نام موفق
+      setSuccess(true);
+
+      toast.success("شما با موفقیت ثبت نام کردید", {
+        title: "ثبت نام موفق 🎉",
+        duration: 2500,
+      });
+
+      // انتقال به صفحه ورود
+      setTimeout(() => {
+        onLogin?.();
+      }, 2500);
     } catch (error) {
       console.error("Register Error:", error);
+
+      toast.error(error.message || "خطایی هنگام ثبت نام رخ داد", {
+        title: "ثبت نام ناموفق",
+        duration: 6000,
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  // تغییر وضعیت نمایش رمز
   const togglePassword = (field) => {
     setShowPassword((prev) => ({
       ...prev,
@@ -113,6 +149,45 @@ function FormSingUp({ title, subtitle, onLogin }) {
 
   return (
     <div className="absolute -left-50 top-10 bg-white rounded-3xl w-150 min-h-200 p-7 shadow-[0_0_45px_rgba(0,0,0,0.3)]">
+      {success && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="w-[400px] rounded-3xl bg-white p-8 text-center shadow-2xl">
+            {/* آیکون تیک */}
+            <div className="mx-auto mb-5 flex size-20 items-center justify-center rounded-full bg-green-100">
+              <svg
+                className="size-10 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+
+            <h2 className="font-[Vazir] text-2xl font-extrabold text-gray-900">
+              ثبت نام موفق بود 🎉
+            </h2>
+
+            <p className="mt-3 font-[Vazir] font-bold text-gray-500">
+              شما با موفقیت ثبت نام کردید
+            </p>
+
+            <p className="mt-2 font-[Vazir] text-sm text-gray-400">
+              در حال انتقال به صفحه ورود...
+            </p>
+
+            {/* Progress */}
+            <div className="mt-6 h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
+              <div className="h-full w-full origin-right animate-[progress_2.5s_linear] rounded-full bg-green-500" />
+            </div>
+          </div>
+        </div>
+      )}
       <div className="w-full">
         {/* Title */}
         <div className="py-2 flex items-center justify-center flex-col">
