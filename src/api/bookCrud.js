@@ -1,7 +1,12 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
-const getBooks = async () => {
-  return await fetch(`${API_URL}v1/book`, {
+const getBooks = async (pageNumber = 1, pageSize = 8) => {
+  const params = new URLSearchParams({
+    pageNumber: String(pageNumber),
+    pageSize: String(pageSize),
+  });
+
+  return await fetch(`${API_URL}v1/book?${params.toString()}`, {
     method: "GET",
   });
 };

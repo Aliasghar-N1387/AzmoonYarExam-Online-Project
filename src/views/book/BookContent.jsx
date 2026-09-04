@@ -152,42 +152,43 @@ function BookContent() {
 
   const [books, setBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(8);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
 
-  const booksPerPage = 8;
-  useEffect(() => {
-    const getBooks = async () => {
-      try {
-        const response = await bookCrud.getBooks();
+  const getBooks = async (page = 1) => {
+    try {
+      const response = await bookCrud.getBooks(page, pageSize);
 
-        if (!response.ok) {
-          throw new Error(`HTTP Error: ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        console.log("Book Data:", result.data);
-
-        setBooks(result.data?.items || []);
-      } catch (error) {
-        console.error("Error fetching books:", error);
-
-        setBooks([]);
-
-        toast.error("اتصال به سرور برقرار نشد", {
-          title: "خطا در دریافت کتاب‌ها",
-          duration: 5000,
-        });
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status}`);
       }
-    };
 
-    getBooks();
+      const result = await response.json();
+
+      const paginationData = result.data;
+
+      setBooks(paginationData?.items || []);
+      setCurrentPage(paginationData?.pageNumber || page);
+      setTotalPages(paginationData?.totalPages || 1);
+      setTotalCount(paginationData?.totalCount || 0);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+
+      setBooks([]);
+      setTotalPages(1);
+      setTotalCount(0);
+
+      toast.error("اتصال به سرور برقرار نشد", {
+        title: "خطا در دریافت کتاب‌ها",
+        duration: 5000,
+      });
+    }
+  };
+
+  useEffect(() => {
+    getBooks(1);
   }, []);
-
-  const totalPages = Math.max(1, Math.ceil(books.length / booksPerPage));
-
-  const startIndex = (currentPage - 1) * booksPerPage;
-
-  const currentBooks = books.slice(startIndex, startIndex + booksPerPage);
 
   const handleCreateBook = async () => {
     try {
@@ -247,12 +248,7 @@ function BookContent() {
       setLessonNames([]);
       setDescription("");
 
-      const booksResponse = await bookCrud.getBooks();
-
-      if (booksResponse.ok) {
-        const booksResult = await booksResponse.json();
-        setBooks(booksResult.data?.items || []);
-      }
+      await getBooks(1);
     } catch (error) {
       console.error("Error creating book:", error);
 
@@ -305,7 +301,7 @@ function BookContent() {
       </div>
       {/* Book Card  */}
       <div className="latest-scroll px-10 cursor-s-resize mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 max-h-120 overflow-auto">
-        {currentBooks.map((book) => {
+        {books.map((book) => {
           return (
             <div key={book.id}>
               <Book
@@ -322,38 +318,50 @@ function BookContent() {
         })}
       </div>
       {/* Book Page Next -  Previous */}
-      <div className="flex px-10 items-center gap-2 mt-8">
-        <button
-          onClick={() => setCurrentPage(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-3 py-1 rounded-lg bg-white cursor-pointer border text-sm disabled:opacity-50"
-        >
-          قبلی
-        </button>
+      <div className="flex items-center justify-between px-10 mt-8">
+        <p className="text-sm text-gray-500">
+          تعداد کل کتاب‌ها:{" "}
+          <span className="font-bold text-violet-700">{totalCount}</span>
+        </p>
 
-        {Array.from({ length: totalPages }, (_, index) => (
+        <div className="flex items-center gap-2">
           <button
-            key={index}
-            onClick={() => setCurrentPage(index + 1)}
-            className={`
-        w-8 h-8 rounded-lg text-sm
-        ${
-          currentPage === index + 1
-            ? "bg-violet-700 text-white"
-            : "bg-white border text-gray-600"
-        }`}
+            type="button"
+            onClick={() => getBooks(currentPage - 1)}
+            disabled={currentPage <= 1}
+            className="rounded-lg border bg-white px-3 py-1 text-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {index + 1}
+            قبلی
           </button>
-        ))}
 
-        <button
-          onClick={() => setCurrentPage(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-3 py-1 cursor-pointer rounded-lg bg-white border text-sm disabled:opacity-50"
-        >
-          بعدی
-        </button>
+          {Array.from({ length: totalPages }, (_, index) => {
+            const page = index + 1;
+
+            return (
+              <button
+                type="button"
+                key={page}
+                onClick={() => getBooks(page)}
+                className={`h-8 w-8 rounded-lg text-sm ${
+                  currentPage === page
+                    ? "bg-violet-700 text-white"
+                    : "border bg-white text-gray-600"
+                }`}
+              >
+                {page}
+              </button>
+            );
+          })}
+
+          <button
+            type="button"
+            onClick={() => getBooks(currentPage + 1)}
+            disabled={currentPage >= totalPages}
+            className="rounded-lg border bg-white px-3 py-1 text-sm cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            بعدی
+          </button>
+        </div>
       </div>
 
       {isModalOpen && (
@@ -388,68 +396,6 @@ function BookContent() {
                 </div>
 
                 {/* Upload */}
-                {!previewImage ? (
-                  <label
-                    htmlFor="book-image"
-                    className="mt-5 flex h-52 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-violet-300 bg-violet-50/30 transition hover:bg-violet-50"
-                  >
-                    <div className="flex size-12 items-center justify-center rounded-full bg-violet-100">
-                      <svg
-                        className="size-6 text-violet-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="1.8"
-                          d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"
-                        />
-                      </svg>
-                    </div>
-
-                    <p className="mt-3 text-sm font-bold text-violet-600">
-                      برای بارگذاری کلیک کنید
-                    </p>
-
-                    <p className="mt-1 text-xs text-gray-400">
-                      یا فایل را بکشید و رها کنید
-                    </p>
-
-                    <p className="mt-2 text-[11px] text-gray-400">
-                      JPG, PNG, WebP - حداکثر 2MB
-                    </p>
-
-                    <input
-                      id="book-image"
-                      type="file"
-                      accept="image/png,image/jpeg,image/webp"
-                      onChange={handleImageChange}
-                      className="hidden"
-                    />
-                  </label>
-                ) : (
-                  <div className="mt-5">
-                    <div className="flex justify-center rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                      <img
-                        src={previewImage}
-                        alt="پیش نمایش جلد کتاب"
-                        className="h-64 w-44 rounded-xl object-cover shadow-md"
-                      />
-                    </div>
-
-                    <div className="mt-3 flex justify-center">
-                      <button
-                        type="button"
-                        className="text-sm font-bold text-red-500 hover:text-red-600"
-                      >
-                        حذف تصویر
-                      </button>
-                    </div>
-                  </div>
-                )}
-
                 <div className="flex justify-center mt-30 text-right mr-5">
                   <div className="mt-4">
                     <h1 className="font-[Vazir] text-violet-900 text-xl font-extrabold">
