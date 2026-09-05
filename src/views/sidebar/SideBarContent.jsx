@@ -10,19 +10,19 @@ function SideBarContent({ collapsed, setCollapsed }) {
       id: 2,
       name: "کتاب ها",
       iconMenu: <LibraryBig size={16} />,
-      router: "/dashboard/books",
+      router: "books",
     },
     {
       id: 3,
       name: "سوالات",
       iconMenu: <CircleQuestionMark size={16} />,
-      router: "/dashboard/questions",
+      router: "questions",
     },
     {
       id: 4,
       name: "آزمون ها",
       iconMenu: <ClipboardList size={16} />,
-      router: "/dashboard/exams",
+      router: "exams",
     },
     {
       id: 5,
