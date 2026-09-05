@@ -233,7 +233,7 @@ function FormSingIn({ title, subtitle, onSingUp }) {
           <div className="px-2 py-10 relative">
             <hr className="border-gray-300" />
 
-            <p className="font-[Vazir] bg-white absolute left-1/2 -translate-x-1/2 -top-3 px-5 text-gray-600">
+            <p className="font-[Vazir] bg-white absolute left-1/2 -translate-x-1/2 top-8 px-5 text-gray-600">
               یا
             </p>
           </div>

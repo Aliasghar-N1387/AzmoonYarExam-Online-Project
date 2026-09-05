@@ -46,6 +46,8 @@ function DashboardContent() {
         });
 
         setError(true);
+      } finally {
+        setLoading(false);
       }
     };
 
