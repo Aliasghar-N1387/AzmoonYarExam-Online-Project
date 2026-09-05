@@ -171,7 +171,7 @@ function FormSingUp({ title, subtitle, onLogin }) {
     <div className="absolute -left-50 top-10 bg-white rounded-3xl w-150 min-h-200 p-7 shadow-[0_0_45px_rgba(0,0,0,0.3)]">
       {success && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="w-[450px] max-h-full rounded-3xl bg-white p-8 text-center shadow-2xl">
+          <div className="w-[450px] max-w-full rounded-3xl bg-white p-8 text-center shadow-2xl">
        
             <div className="mx-auto mb-5 flex size-20 items-center justify-center rounded-full bg-green-100">
               <svg
