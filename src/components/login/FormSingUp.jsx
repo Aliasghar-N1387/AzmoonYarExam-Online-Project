@@ -134,6 +134,14 @@ function FormSingUp({ title, subtitle, onLogin }) {
       }
 
       // ثبت نام موفق
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
+        }),
+      );
+
       setSuccess(true);
 
       // انتقال به صفحه ورود
@@ -164,7 +172,7 @@ function FormSingUp({ title, subtitle, onLogin }) {
       {success && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="w-100 rounded-3xl bg-white p-8 text-center shadow-2xl">
-            {/* آیکون تیک */}
+       
             <div className="mx-auto mb-5 flex size-20 items-center justify-center rounded-full bg-green-100">
               <svg
                 className="size-10 text-green-600"

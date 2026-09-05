@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import SearchHeader from "../../components/header/SearchHeader";
 import { Bell, MessageCircleMore, Moon } from "lucide-react";
 import UserProfileHeader from "../../components/header/UserProfileHeader";
 
-
 function HeaderContent() {
+  const [user] = useState(() => {
+    const savedUser = localStorage.getItem("user");
+
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+
+  const firstName = user?.firstName || "";
+  const lastName = user?.lastName || "";
+
   const visitMoreWebIcon = [
     {
       id: 1,
@@ -21,16 +29,13 @@ function HeaderContent() {
   ];
 
   return (
-    <div
-      className="border-b border-gray-300 bg-violet-50/50 py-4 px-8 flex items-center justify-end"
- 
-    >
-      {" "}
+    <div className="border-b border-gray-300 bg-violet-50/50 py-4 px-8 flex items-center justify-end">
       {/* Profile User */}
       <div className="mr-20">
         <UserProfileHeader />
       </div>
-      {/* {Dark Mode} */}
+
+      {/* Icons */}
       <div className="flex items-center gap-6">
         {visitMoreWebIcon.map((visit) => {
           const Icon = visit.icon;
@@ -45,13 +50,18 @@ function HeaderContent() {
           );
         })}
       </div>
-      {/* {Search} */}
+
+      {/* Search */}
       <div className="px-40">
         <SearchHeader />
       </div>
+
       {/* Title */}
       <div className="text-right">
-        <p className="font-bold text-xl"> 👋 سلام علی اصغر نجفی </p>
+        <p className="font-bold text-xl">
+          👋 سلام {firstName} {lastName}
+        </p>
+
         <p className="text-gray-400 pt-1">خوش آمدی به پنل کاربری آزمون یار</p>
       </div>
     </div>
