@@ -1,24 +1,3 @@
-import React from "react";
-import logo from "../../assets/img/LogoApp.png";
-import {
-  Book,
-  CircleQuestionMark,
-  ClipboardClock,
-  ClipboardList,
-  ClipboardPlus,
-  GraduationCap,
-  Home,
-  LibraryBig,
-  ChevronRight,
-  LogOut,
-  WavesArrowDown,
-  Crown,
-  Settings,
-} from "lucide-react";
-import { useLocation, useNavigate } from "react-router";
-
-import bgsidebar from "../../assets/img/sidebar-img.png";
-
 function SideBarContent({ collapsed, setCollapsed }) {
   const menuItemSidebar = [
     {
@@ -31,58 +10,64 @@ function SideBarContent({ collapsed, setCollapsed }) {
       id: 2,
       name: "کتاب ها",
       iconMenu: <LibraryBig size={16} />,
-      router: "books",
+      router: "/dashboard/books",
     },
     {
       id: 3,
       name: "سوالات",
       iconMenu: <CircleQuestionMark size={16} />,
-      router: "questions",
+      router: "/dashboard/questions",
     },
     {
       id: 4,
       name: "آزمون ها",
       iconMenu: <ClipboardList size={16} />,
-      router: "exams",
+      router: "/dashboard/exams",
     },
     {
       id: 5,
       name: "ایجاد آزمون",
       iconMenu: <ClipboardPlus size={16} />,
-      router: "create-exam",
+      router: "/dashboard/create-exam",
     },
     {
       id: 6,
       name: "دانلود ها",
       iconMenu: <WavesArrowDown size={16} />,
-      router: "create-exam",
+      router: "/dashboard/downloads",
     },
     {
       id: 7,
       name: "اشتراک",
       iconMenu: <Crown size={16} />,
-      router: "create-exam",
+      router: "/dashboard/subscription",
     },
     {
       id: 8,
       name: "تنظیمات",
       iconMenu: <Settings size={16} />,
-      router: "create-exam",
+      router: "/dashboard/settings",
     },
     {
       id: 9,
       name: "راهنما",
       iconMenu: <CircleQuestionMark size={16} />,
-      router: "create-exam",
+      router: "/dashboard/help",
     },
   ];
 
   const location = useLocation();
+  const navigate = useNavigate();
+
   const toggleCollapse = () => {
     setCollapsed(!collapsed);
   };
 
-  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.clear();
+
+    navigate("/login", { replace: true });
+  };
 
   return (
     <div
@@ -105,6 +90,7 @@ function SideBarContent({ collapsed, setCollapsed }) {
             </p>
           </div>
         )}
+
         <div
           className="w-20 h-18 bg-violet-900"
           style={{
@@ -117,33 +103,42 @@ function SideBarContent({ collapsed, setCollapsed }) {
             maskPosition: "center",
             maskSize: "contain",
           }}
-        ></div>
+        />
       </div>
 
       {/* Content SideBar */}
-      <div className="">
+      <div>
         <ul>
           {menuItemSidebar.map((menu) => {
-            const isActive =
-              menu.id === 1
-                ? location.pathname === "/dashboard"
-                : location.pathname === `/dashboard/${menu.router}`;
+            const isActive = location.pathname === menu.router;
+
             return (
               <li
                 key={menu.id}
                 onClick={() => navigate(menu.router)}
-                className={`flex transition-all duration-250 cursor-pointer group items-center rounded-lg py-1.5 px-1 mt-4 ${isActive ? "bg-violet-900" : "bg-linear-to-r hover:from-white hover:to-violet-200  "} ${collapsed ? "justify-center" : "gap-3"}`}
+                className={`flex transition-all duration-250 cursor-pointer group items-center rounded-lg py-1.5 px-1 mt-4 ${
+                  isActive
+                    ? "bg-violet-900"
+                    : "bg-linear-to-r hover:from-white hover:to-violet-200"
+                } ${collapsed ? "justify-center" : "gap-3"}`}
               >
                 <span
-                  className={`p-1 rounded-lg transition-all duration-300 ${isActive ? "bg-gray-100 text-violet-900 shadow-sm shadow-gray-300" : "text-violet-900 group-hover:bg-gray-100 group-hover:shadow-sm group-hover:shadow-violet-200"}`}
+                  className={`p-1 rounded-lg transition-all duration-300 ${
+                    isActive
+                      ? "bg-gray-100 text-violet-900 shadow-sm shadow-gray-300"
+                      : "text-violet-900 group-hover:bg-gray-100 group-hover:shadow-sm group-hover:shadow-violet-200"
+                  }`}
                 >
                   <span className="block transition-transform duration-300 group-hover:scale-110">
                     {menu.iconMenu}
                   </span>
                 </span>
+
                 {!collapsed && (
                   <span
-                    className={`font-bold text-sm ${isActive ? "text-white" : "text-violet-900"}`}
+                    className={`font-bold text-sm ${
+                      isActive ? "text-white" : "text-violet-900"
+                    }`}
                   >
                     {menu.name}
                   </span>
@@ -154,10 +149,12 @@ function SideBarContent({ collapsed, setCollapsed }) {
         </ul>
       </div>
 
-      {/* Footer SideBar */}
+      {/* Footer Sidebar */}
       <div className="mt-auto">
-        {/* Exit Button */}
+        {/* Logout Button */}
         <button
+          type="button"
+          onClick={handleLogout}
           className={`flex w-full py-2.5 pt-3 px-2 cursor-pointer ${
             collapsed ? "justify-center" : "gap-3"
           }`}
@@ -168,12 +165,15 @@ function SideBarContent({ collapsed, setCollapsed }) {
           />
 
           {!collapsed && (
-            <span className="mr-2 font-bold text-sm text-rose-700">خروج</span>
+            <span className="mr-2 font-bold text-sm text-rose-700">
+              خروج
+            </span>
           )}
         </button>
 
         {/* Collapse Button */}
         <button
+          type="button"
           onClick={toggleCollapse}
           className={`flex w-full py-2.5 pt-3 px-2 border-t border-gray-300 cursor-pointer ${
             collapsed ? "justify-center" : "gap-3"
@@ -192,7 +192,9 @@ function SideBarContent({ collapsed, setCollapsed }) {
           </span>
 
           {!collapsed && (
-            <span className="mr-2 font-bold text-sm text-violet-900">بستن</span>
+            <span className="mr-2 font-bold text-sm text-violet-900">
+              بستن
+            </span>
           )}
         </button>
       </div>

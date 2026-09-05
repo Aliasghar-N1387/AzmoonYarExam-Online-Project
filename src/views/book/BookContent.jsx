@@ -40,9 +40,9 @@ function BookContent() {
 
   const [description, setDescription] = useState("");
 
-  // const [bookImage, setBookImage] = useState(null);
+  const [bookImage, setBookImage] = useState(null);
 
-  // const [previewImage, setPreviewImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
   const [status, setStatus] = useState("active");
 
@@ -125,16 +125,18 @@ function BookContent() {
     12: "دوازدهم",
   };
 
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files?.[0];
+  const API_URL = import.meta.env.VITE_API_URL;
 
-  //   if (!file) return;
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
 
-  //   setBookImage(file);
+    if (!file) return;
 
-  //   const imageUrl = URL.createObjectURL(file);
-  //   setPreviewImage(imageUrl);
-  // };
+    setBookImage(file);
+
+    const imageUrl = URL.createObjectURL(file);
+    setPreviewImage(imageUrl);
+  };
 
   const handleLessonCountChange = (e) => {
     const count = Math.max(0, Number(e.target.value) || 0);
@@ -309,7 +311,11 @@ function BookContent() {
                 grade={`پایه ${gradeBooks[book.grade] || book.grade}`}
                 field={book.bookSource === 1 ? "کتاب درسی" : "سایر منابع"}
                 level=""
-                image={null}
+                image={
+                  book.picture
+                    ? `${API_URL.replace(/\/$/, "")}${book.picture}`
+                    : null
+                }
                 lessons={book.lessons?.length || 0}
                 questions={0}
               />
@@ -396,6 +402,34 @@ function BookContent() {
                 </div>
 
                 {/* Upload */}
+                <div className="mt-6 flex flex-col items-center">
+                  {previewImage ? (
+                    <img
+                      src={previewImage}
+                      alt="پیش‌نمایش جلد کتاب"
+                      className="h-52 w-40 rounded-xl object-cover border border-gray-200 shadow-sm"
+                    />
+                  ) : (
+                    <div className="h-52 w-40 rounded-xl border-2 border-dashed border-violet-200 bg-violet-50 flex flex-col items-center justify-center">
+                      <BookOpen className="size-12 text-violet-400" />
+
+                      <span className="mt-3 text-xs text-gray-400">
+                        تصویری انتخاب نشده
+                      </span>
+                    </div>
+                  )}
+
+                  <label className="mt-4 cursor-pointer rounded-xl bg-violet-700 px-5 py-3 text-sm font-bold text-white hover:bg-violet-800">
+                    انتخاب تصویر
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageChange}
+                    />
+                  </label>
+                </div>
+
                 <div className="flex justify-center mt-30 text-right mr-5">
                   <div className="mt-4">
                     <h1 className="font-[Vazir] text-violet-900 text-xl font-extrabold">
