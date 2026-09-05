@@ -25,7 +25,7 @@ function SideBarContent({ collapsed, setCollapsed }) {
       id: 1,
       name: "داشبورد",
       iconMenu: <Home size={16} />,
-      router: "/",
+      router: "/dashboard",
     },
     {
       id: 2,
@@ -125,9 +125,9 @@ function SideBarContent({ collapsed, setCollapsed }) {
         <ul>
           {menuItemSidebar.map((menu) => {
             const isActive =
-              menu.router === "/"
-                ? location.pathname === "/"
-                : location.pathname === `/${menu.router}`;
+              menu.id === 1
+                ? location.pathname === "/dashboard"
+                : location.pathname === `/dashboard/${menu.router}`;
             return (
               <li
                 key={menu.id}

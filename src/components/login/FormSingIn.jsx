@@ -73,8 +73,6 @@ function FormSingIn({ title, subtitle, onSingUp }) {
       console.log("Login Response:", result);
 
       if (response.status === 200) {
-        console.log("ورود موفق");
-
         // if (result?.token) {
         //   localStorage.setItem("token", result.token);
         // }
@@ -82,7 +80,14 @@ function FormSingIn({ title, subtitle, onSingUp }) {
         // if (result?.accessToken) {
         //   localStorage.setItem("accessToken", result.accessToken);
         // }
-
+        console.log("ورود موفق");
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            firstName: result?.data?.firstName || result?.firstName || "",
+            lastName: result?.data?.lastName || result?.lastName || "",
+          }),
+        );
         toast.success("ورود با موفقیت انجام شد", {
           title: "خوش آمدید 🎉",
           duration: 1500,
